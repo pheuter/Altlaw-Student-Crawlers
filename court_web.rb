@@ -70,6 +70,7 @@ class Court_Web
         document.add_link("applications/pdf", link)
       end
       
+      document.court = "http://id.altlaw.org/courts/us/fed/dist/ctd"
       receiver << document
     end
   end
