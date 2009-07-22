@@ -1,3 +1,4 @@
+#designed to work for any court_web state. This version implemented for Connecticut
 require 'enumerator'
 
 class Court_Web
