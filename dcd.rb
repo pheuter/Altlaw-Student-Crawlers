@@ -1,16 +1,18 @@
 class Dcd
   include Expect  # always include this
+  
+  OPINIONS_PAGE = "https://ecf.dcd.uscourts.gov/cgi-bin/Opinions.pl"
 
   def accept_host
     "www.dcd.uscourts.gov"
   end
 
   def accept?(download)
-    download.request_uri == "https://ecf.dcd.uscourts.gov/cgi-bin/Opinions.pl"
+    download.request_uri == OPINIONS_PAGE
   end
 
   def request
-    DownloadRequest.new("https://ecf.dcd.uscourts.gov/cgi-bin/Opinions.pl")
+    DownloadRequest.new(OPINIONS_PAGE)
   end
 
   def parse(download, receiver)
@@ -26,11 +28,13 @@ class Dcd
       document.court = "http://id.altlaw.org/courts/us/fed/dist/dcd"
 
       date_text = row.at('td[1]').inner_html
-      date_text =~ /(\d{2})\/(\d{2})\/(\d{4})<!--(.*)-->/
-      document.date = Date.new($3.to_i, $1.to_i, $2.to_i)
+#      date_text =~ /(\d{2})\/(\d{2})\/(\d{4})<!--(.*)-->/
+      md = match(date_text,/(\d{2})\/(\d{2})\/(\d{4})<!--(.*)-->/)
+      document.date = Date.new(md[3].to_i, md[1].to_i, md[2].to_i)
       number_text = row.at('td[2]').children.first.to_s
-      number_text =~ /(\d{4}-\d{4})/
-      document.dockets << $1
+#      number_text =~ /(\d{4}-\d{4})/
+      md = match(number_text,/(\d{4}-\d{4})/)
+      document.dockets << md[1]
       document.name = row.at('td[2] br').next.to_s
       row.search('td[3] a').each do |anchor|
         document.add_link('application/pdf', 'https://ecf.dcd.uscourts.gov/cgi-bin/' + anchor['href'])
