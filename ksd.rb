@@ -1,12 +1,14 @@
 # Crawler for the Federal District Court of Kansas
 # Contributor: Alexander Lam (lambchop468 *AT* gmail.com)
-# Changelog: July 26, 2009: First Revision
+# Changelog:
+# July 26, 2009: First Revision
+# August 14, 2009: Fixed bug: BASEURL contained Opinions.pl? which is incorrect.
 class Ksd
 	START_DATE = 2005 #the first year that opinions were available.
 	CURRENT_DATE = Time.now.year
 	#CURRENT_DATE = 2009
 	CURRENT_YEAR = "currentYear"
-	BASEURL = "https://ecf.ksd.uscourts.gov/cgi-bin/Opinions.pl?"
+	BASEURL = "https://ecf.ksd.uscourts.gov/cgi-bin/"
 	OPINIONS = "Opinions.pl?"
 	include Expect
 	def accept_host
