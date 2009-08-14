@@ -3,6 +3,7 @@
 # Changelog:
 # July 26, 2009: First Revision
 # August 14, 2009: Fixed bug: BASEURL contained Opinions.pl? which is incorrect.
+# August 14, 2009: Changed regex that splits cell 2 into the Docket and Case Name to use the match() function.
 class Ksd
 	START_DATE = 2005 #the first year that opinions were available.
 	CURRENT_DATE = Time.now.year
@@ -36,7 +37,7 @@ class Ksd
 		end
 		pages += [DownloadRequest.new(BASEURL + OPINIONS + CURRENT_YEAR)]
 	end
-#The headers in the table of cases.
+	#The headers in the table of cases.
 	HEADINGS = [" Date Filed", " Case", " Opinion", " Judge"]
 	def parse (download, receiver)
                 html = Hpricot(download.response_body_as('US-ASCII'))
@@ -59,6 +60,9 @@ class Ksd
                         row.at("td[2]").inner_html =~ %r@(.*)<br />(.*)@
                         doc.dockets << $1
                         doc.name = $2
+			matchedInfo = match(row.at("td[2]").inner_html, %r@(.*)<br />(.*)@)
+			doc.dockets << matchedInfo[1]
+			doc.name = matchedInfo[2]
                         doc.add_link("application/pdf", BASEURL + row.at("td[3] a").attributes['href'])
                         doc.court = "http://id.altlaw.org/courts/us/fed/dist/ksd"
                         receiver << doc
