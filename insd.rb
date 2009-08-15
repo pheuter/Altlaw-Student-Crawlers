@@ -31,15 +31,15 @@ class Insd
         if anchor
           document = Document.new
           document.court = "http://id.altlaw.org/courts/us/fed/dist/insd"
-          document.opinion_by = current_judge.delete("\t\n\r?")
-          document.name = anchor.inner_text.delete("\t\n\r?")
-          puts 'anchor.inner_text = ' + anchor.inner_text
-          puts 'anchor[href] = ' + anchor['href']
+          document.opinion_by = current_judge.delete("\t\n\r?").strip
+          document.name = anchor.inner_text.delete("\t\n\r?").strip
+          #puts 'anchor.inner_text = ' + anchor.inner_text
+          #puts 'anchor[href] = ' + anchor['href']
           pdf_name = /[Oo]pinions\/(.*\.(pdf|PDF))/.match(anchor['href'])[1]
           pdf_full_name = 'www.insd.uscourts.gov/Opinions/' + pdf_name
           document.add_link('application/pdf',pdf_full_name)
 
-          puts 'td.inner_text = ' + td.inner_text
+          #puts 'td.inner_text = ' + td.inner_text
           md = /Cause No\. ((.|\s)*?)(\d{1,2})\/(\d{1,2})\/(\d{2})/.match(td.inner_text)
           document.dockets << md[1].delete("\t\n\r?").strip
           #md = /(\d{1,2})\/(\d{1,2})\/(\d{2})/.match(td.inner_text)
